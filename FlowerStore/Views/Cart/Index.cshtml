@@ -1,5 +1,7 @@
+@model List<CartItem>
 @{
     ViewData["Title"] = "Shopping Cart";
+    var total = (decimal)(ViewData["Total"] ?? 0m);
 }
 
 @section Styles {
@@ -24,6 +26,9 @@
             background-color: #fff0f6;
             border: 1px solid #f5c2d7;
             border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .cart-total {
@@ -31,30 +36,68 @@
             margin-top: 25px;
         }
 
-        #cart-items {
+        .cart-list {
             list-style: none;
             padding: 0;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-weight: bold;
         }
     </style>
 }
 
-<!-- Shopping Cart -->
-<!-- Student 1: this cart still uses localStorage (script.js); it will move to the Session -->
+<!-- Shopping Cart (stored in the Session) -->
 <main class="cart-container">
     <h1>🛒 Your Shopping Cart</h1>
     <p>Here are the flowers you selected.</p>
 
-    <ul id="cart-items">
-        <li>Your cart is empty.</li>
+    @if (TempData["Message"] != null)
+{
+    <div style="max-width: 600px; margin: 20px auto; padding: 12px; background-color: #fff0f6; border: 1px solid #f5c2d7; border-radius: 8px; color: #d63384; text-align: center; font-weight: bold;">
+        @TempData["Message"]
+    </div>
+}
+
+    <ul class="cart-list">
+        @if (Model.Count == 0)
+        {
+            <li>Your cart is empty.</li>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <li class="cart-item">
+                    <span>
+                        <strong>@item.Name</strong> —
+                        @item.Price.ToString("0.##") SAR × @item.Quantity
+                        = <strong>@item.Total.ToString("0.##") SAR</strong>
+                    </span>
+
+                    <form asp-action="Remove" method="post">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <button type="submit" class="remove-btn">✕ Remove</button>
+                    </form>
+                </li>
+            }
+        }
     </ul>
 
     <h2 class="cart-total">
-        Total: <span id="cart-total">0</span> SAR
+        Total: @total.ToString("0.##") SAR
     </h2>
 
-    <button class="btn" id="clearCartBtn" type="button">
-        Clear Cart
-    </button>
+    @if (Model.Count > 0)
+    {
+        <form asp-action="Clear" method="post" id="clearCartForm" style="display: inline;">
+            <button class="btn" type="submit">Clear Cart</button>
+        </form>
+    }
 
     <p>
         <a asp-controller="Products" asp-action="Index" class="btn">

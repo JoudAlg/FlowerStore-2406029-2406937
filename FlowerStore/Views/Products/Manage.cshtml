@@ -1,0 +1,84 @@
+@model List<Product>
+@{
+    ViewData["Title"] = "Manage Products";
+}
+
+@section Styles {
+    <style>
+        .manage-container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .manage-container h1 {
+            color: #d63384;
+        }
+
+        .manage-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .action-link {
+            color: #d63384;
+            margin: 0 6px;
+            font-weight: bold;
+        }
+    </style>
+}
+
+<main class="manage-container">
+    <h1>⚙️ Manage Products</h1>
+    <p>Add, edit or delete the flowers shown in the store.</p>
+
+    @if (TempData["Message"] != null)
+{
+    <div style="max-width: 600px; margin: 20px auto; padding: 12px; background-color: #fff0f6; border: 1px solid #f5c2d7; border-radius: 8px; color: #d63384; text-align: center; font-weight: bold;">
+        @TempData["Message"]
+    </div>
+}
+
+    <a asp-action="Create" class="btn">+ Add New Product</a>
+
+    <!-- RETRIEVE: all products from the database -->
+    <table class="manage-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price.ToString("0.##") SAR</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@product.Id" class="action-link">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@product.Id" class="action-link">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model.Count == 0)
+    {
+        <p>There are no products yet.</p>
+    }
+
+    <p style="margin-top: 20px;">
+        <a asp-action="Index" style="color: #d63384;">← Back to the store</a>
+    </p>
+</main>

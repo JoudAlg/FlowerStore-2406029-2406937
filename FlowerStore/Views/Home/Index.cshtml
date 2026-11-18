@@ -1,3 +1,4 @@
+@model List<Product>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -11,6 +12,13 @@
     <a href="#about-section" class="btn">Learn More About Us</a>
 </section>
 <!-- End of Hero Section -->
+
+@if (TempData["Message"] != null)
+{
+    <div style="max-width: 600px; margin: 20px auto; padding: 12px; background-color: #fff0f6; border: 1px solid #f5c2d7; border-radius: 8px; color: #d63384; text-align: center; font-weight: bold;">
+        @TempData["Message"]
+    </div>
+}
 
 <!-- Image Mapping Section -->
 <div class="hero-image-container">
@@ -30,7 +38,7 @@
     </map>
 </div>
 
-<!-- Start of Featured Products Section -->
+<!-- Start of Featured Products Section (products come from the database) -->
 <section class="featured-products" id="products-info">
     <h2>Featured Products</h2>
 
@@ -51,49 +59,42 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Red Rose Bouquet</td>
-                <td>12 Fresh Red Roses with Custom Arrangement</td>
-                <td>120 SAR</td>
-            </tr>
-            <tr>
-                <td>Roses with Chocolate</td>
-                <td>Luxury Flower Mix with Premium Chocolate Box</td>
-                <td>200 SAR</td>
-            </tr>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price.ToString("0.##") SAR</td>
+                </tr>
+            }
         </tbody>
     </table>
 
     <!-- Product Cards -->
     <div class="product-grid">
+        @foreach (var product in Model)
+        {
+            <div class="product-card"
+                 data-name="@product.Name"
+                 data-price="@product.Price">
 
-        <!-- Product 1: Red Rose Bouquet -->
-        <div class="product-card"
-             data-name="Red Rose Bouquet"
-             data-price="120">
+                <h3>@product.Name</h3>
+                <p>@product.Price.ToString("0.##") SAR</p>
 
-            <h3>Red Rose Bouquet</h3>
-            <p>120 SAR</p>
-
-            <button type="button" class="btn add-to-cart">
-                Add to Cart
-            </button>
-        </div>
-
-        <!-- Product 2: Roses with Chocolate -->
-        <div class="product-card"
-             data-name="Roses with Chocolate"
-             data-price="200">
-
-            <h3>Roses with Chocolate</h3>
-            <p>200 SAR</p>
-
-            <button type="button" class="btn add-to-cart">
-                Add to Cart
-            </button>
-        </div>
-
+                <form asp-controller="Cart" asp-action="Add" method="post" class="add-to-cart-form">
+                    <input type="hidden" name="productId" value="@product.Id" />
+                    <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Home")" />
+                    <button type="submit" class="btn add-to-cart">
+                        Add to Cart
+                    </button>
+                </form>
+            </div>
+        }
     </div>
+
+    <p style="text-align: center;">
+        <a asp-controller="Products" asp-action="Index" class="btn">View All Products 🌸</a>
+    </p>
 </section>
 <!-- End of Featured Products Section -->
 

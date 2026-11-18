@@ -1,5 +1,7 @@
+@model List<Product>
 @{
     ViewData["Title"] = "Products";
+    var search = ViewData["Search"] as string;
 }
 
 @section Styles {
@@ -20,6 +22,34 @@
         .product-card p {
             line-height: 1.6;
         }
+
+        .product-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-placeholder {
+            font-size: 60px;
+            height: 160px;
+            line-height: 160px;
+        }
+
+        .search-form {
+            margin: 25px auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-form input {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
     </style>
 }
 
@@ -31,43 +61,70 @@
         for every special occasion.
     </p>
 
-    <!-- Student 1: these hard-coded cards will be replaced by products from the database -->
+    <!-- SEARCH form (sends ?search=... to the controller) -->
+    <form asp-action="Index" method="get" class="search-form">
+        <input type="text" name="search" value="@search" placeholder="Search flowers, e.g. rose" />
+        <button type="submit" class="btn">Search 🔍</button>
+        @if (!string.IsNullOrEmpty(search))
+        {
+            <a asp-action="Index" class="btn">Show All</a>
+        }
+    </form>
+
+    @if (TempData["Message"] != null)
+{
+    <div style="max-width: 600px; margin: 20px auto; padding: 12px; background-color: #fff0f6; border: 1px solid #f5c2d7; border-radius: 8px; color: #d63384; text-align: center; font-weight: bold;">
+        @TempData["Message"]
+    </div>
+}
+
+    @if (!string.IsNullOrEmpty(search))
+    {
+        <p>Found <strong>@Model.Count</strong> result(s) for "<strong>@search</strong>"</p>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <p>No products found. 🌱</p>
+    }
+
     <div class="product-grid">
+        @foreach (var product in Model)
+        {
+            <div class="product-card"
+                 data-name="@product.Name"
+                 data-price="@product.Price">
 
-        <!-- Product 1 -->
-        <div class="product-card"
-             data-name="Red Rose Bouquet"
-             data-price="120">
-            <h2>Red Rose Bouquet</h2>
-            <p>
-                12 Fresh Red Roses with
-                Custom Arrangement
-            </p>
-            <h3>120 SAR</h3>
-            <button class="btn add-to-cart" type="button">
-                Add to Cart
-            </button>
-        </div>
+                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    <img src="@product.ImageUrl" alt="@product.Name" />
+                }
+                else
+                {
+                    <div class="product-placeholder">💐</div>
+                }
 
-        <!-- Product 2 -->
-        <div class="product-card"
-             data-name="Roses with Chocolate"
-             data-price="200">
-            <h2>Roses with Chocolate</h2>
-            <p>
-                Luxury Flower Mix with
-                Premium Chocolate Box
-            </p>
-            <h3>200 SAR</h3>
-            <button class="btn add-to-cart" type="button">
-                Add to Cart
-            </button>
-        </div>
+                <h2>@product.Name</h2>
+                <p>@product.Description</p>
+                <h3>@product.Price.ToString("0.##") SAR</h3>
+
+                <form asp-controller="Cart" asp-action="Add" method="post" class="add-to-cart-form">
+                    <input type="hidden" name="productId" value="@product.Id" />
+                    <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                    <button class="btn add-to-cart" type="submit">
+                        Add to Cart
+                    </button>
+                </form>
+            </div>
+        }
     </div>
 
     <p>
         <a asp-controller="Cart" asp-action="Index" class="btn">
             View Shopping Cart 🛒
+        </a>
+        <a asp-action="Manage" class="btn">
+            Manage Products ⚙️
         </a>
     </p>
 </main>

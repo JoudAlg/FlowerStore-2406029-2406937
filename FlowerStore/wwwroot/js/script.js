@@ -80,127 +80,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-    // PART 4: Shopping Cart
+    // PART 4: Shopping Cart buttons
+    // (The cart itself is now saved on the server in the Session by CartController)
+    const cartForms = document.querySelectorAll(".add-to-cart-form");
 
-    // Get saved cart items
-    function getCart() {
-        try {
-            const savedCart = JSON.parse(
-                localStorage.getItem("flowerCart") || "[]"
-            );
+    for (let i = 0; i < cartForms.length; i++) {
 
-            return Array.isArray(savedCart) ? savedCart : [];
-        }
-        catch (error) {
-            return [];
-        }
-    }
+        cartForms[i].addEventListener("submit", function () {
+            const button = this.querySelector("button");
 
-    // Save cart items
-    function saveCart(cart) {
-        localStorage.setItem(
-            "flowerCart",
-            JSON.stringify(cart)
-        );
-    }
-
-    // Add products to cart
-    const cartButtons = document.querySelectorAll(
-        ".product-card button"
-    );
-
-    for (let i = 0; i < cartButtons.length; i++) {
-
-        cartButtons[i].addEventListener("click", function () {
-
-            const card = this.closest(".product-card");
-
-            const productName = card.dataset.name ||
-                card.querySelector("h3").textContent;
-
-            const priceText = card.dataset.price ||
-                card.querySelector("p").textContent;
-
-            const productPrice = Number(
-                String(priceText).replace(/[^\d.]/g, "")
-            );
-
-            if (!Number.isFinite(productPrice) ||
-                productPrice <= 0) {
-                alert("Invalid product price.");
-                return;
-            }
-
-            const cart = getCart();
-
-            cart.push({
-                name: productName,
-                price: productPrice
-            });
-
-            saveCart(cart);
-
-            alert(productName + " added to cart! 🌸");
-
-            this.textContent = "Added ✓";
-            this.style.backgroundColor = "#4CAF50";
+            // Show feedback while the page sends the product to the server
+            button.textContent = "Adding... 🌸";
+            button.style.backgroundColor = "#4CAF50";
         });
     }
 
-    // Display shopping cart
-    const cartItems = document.getElementById("cart-items");
-    const cartTotal = document.getElementById("cart-total");
+    // Ask before clearing the whole cart
+    const clearCartForm = document.getElementById("clearCartForm");
 
-    if (cartItems && cartTotal) {
-
-        function displayCart() {
-            const cart = getCart();
-            let total = 0;
-
-            cartItems.innerHTML = "";
-
-            if (cart.length === 0) {
-                const emptyItem = document.createElement("li");
-
-                emptyItem.textContent = "Your cart is empty.";
-                cartItems.appendChild(emptyItem);
+    if (clearCartForm) {
+        clearCartForm.addEventListener("submit", function (event) {
+            if (!confirm("Are you sure you want to clear your shopping cart?")) {
+                event.preventDefault();
             }
-            else {
-                cart.forEach(function (product) {
+        });
+    }
 
-                    total += Number(product.price);
+    // Client-side validation for the Add / Edit product form
+    const productForm = document.getElementById("productForm");
 
-                    const item = document.createElement("li");
-                    item.className = "cart-item";
+    if (productForm) {
+        productForm.addEventListener("submit", function (event) {
+            const name = document.getElementById("Name").value.trim();
+            const price = Number(document.getElementById("Price").value);
 
-                    item.textContent =
-                        product.name + " - " +
-                        product.price + " SAR";
-
-                    cartItems.appendChild(item);
-                });
+            if (name.length < 2) {
+                alert("Please enter a product name (at least 2 characters).");
+                event.preventDefault();
             }
-
-            cartTotal.textContent = total;
-        }
-
-        displayCart();
-
-        // Clear shopping cart
-        const clearButton = document.getElementById(
-            "clearCartBtn"
-        );
-
-        if (clearButton) {
-
-            clearButton.addEventListener("click", function () {
-
-                saveCart([]);
-                displayCart();
-
-                alert("Shopping cart cleared successfully!");
-            });
-        }
+            else if (!Number.isFinite(price) || price < 1 || price > 10000) {
+                alert("Price must be between 1 and 10,000 SAR.");
+                event.preventDefault();
+            }
+        });
     }
 
     // PART 5: Login Form Validation

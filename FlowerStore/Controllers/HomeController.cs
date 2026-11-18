@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using FlowerStore.Data;
 using FlowerStore.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,13 +7,26 @@ namespace FlowerStore.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: /Home/Index  (was index.html)
-        public IActionResult Index()
+        private readonly AppDbContext _context;
+
+        public HomeController(AppDbContext context)
         {
-            return View();
+            _context = context;
         }
 
-        // GET: /Home/About  (was about.html)
+        // GET: /Home/Index
+        // Shows the first 3 products from the database as "Featured Products"
+        public IActionResult Index()
+        {
+            var featured = _context.Products
+                .OrderBy(p => p.Id)
+                .Take(3)
+                .ToList();
+
+            return View(featured);
+        }
+
+        // GET: /Home/About
         public IActionResult About()
         {
             return View();

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower Store - @ViewData["Title"]</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
+    <!-- Each page can add its own embedded CSS here -->
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <!-- Start of Header and Navigation Bar (Master page and menu) -->
+    <header class="main-header">
+        <div class="logo">🌸 Flower Store</div>
+        <nav class="nav-links">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Products" asp-action="Index">Products</a>
+            <a asp-controller="Cart" asp-action="Index">🛒 Cart</a>
+            <a asp-controller="Account" asp-action="Login">Login</a>
+            <a asp-controller="Account" asp-action="Register">Sign-up</a>
+            <a asp-controller="Home" asp-action="About">About Us</a>
+        </nav>
+    </header>
+    <!-- End of Header -->
+
+    @RenderBody()
+
+    <!-- Start of Footer -->
+    <footer>
+        <p>All Rights Reserved &copy; 2026</p>
+    </footer>
+    <!-- End of Footer -->
+
+    <!-- External JavaScript -->
+    <script src="~/js/script.js" asp-append-version="true"></script>
+
+    <!-- Each page can add its own embedded JavaScript here -->
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

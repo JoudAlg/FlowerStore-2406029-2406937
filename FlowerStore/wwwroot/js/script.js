@@ -1,4 +1,5 @@
 
+
  // Flower & Gift Store - JavaScript
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -46,12 +47,12 @@ document.addEventListener("DOMContentLoaded", function () {
         changePictureBtn.addEventListener("click", function () {
 
             if (isOriginalPicture) {
-                storeImage.src = "flower2.png";
+                storeImage.src = "/flower2.png";
                 changePictureBtn.textContent = "Original Picture 🌸";
                 isOriginalPicture = false;
             }
             else {
-                storeImage.src = "flower.jpg";
+                storeImage.src = "/flower.jpg";
                 changePictureBtn.textContent = "Change Picture 🌸";
                 isOriginalPicture = true;
             }

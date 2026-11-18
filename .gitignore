@@ -1,0 +1,16 @@
+# Visual Studio / .NET build output
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userprefs
+*.rsuser
+[Dd]ebug/
+[Rr]elease/
+packages/
+*.nupkg
+TestResults/
+# Local database files
+*.mdf
+*.ldf

@@ -1,0 +1,89 @@
+@{
+    ViewData["Title"] = "Products";
+}
+
+@section Styles {
+    <style>
+        .products-container {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .products-container h1 {
+            color: #d63384;
+        }
+
+        .product-card {
+            width: 250px;
+        }
+
+        .product-card p {
+            line-height: 1.6;
+        }
+    </style>
+}
+
+<!-- Products Section -->
+<main class="products-container">
+    <h1>Our Flower Collection</h1>
+    <p>
+        Explore our beautiful flowers and gifts
+        for every special occasion.
+    </p>
+
+    <!-- Student 1: these hard-coded cards will be replaced by products from the database -->
+    <div class="product-grid">
+
+        <!-- Product 1 -->
+        <div class="product-card"
+             data-name="Red Rose Bouquet"
+             data-price="120">
+            <h2>Red Rose Bouquet</h2>
+            <p>
+                12 Fresh Red Roses with
+                Custom Arrangement
+            </p>
+            <h3>120 SAR</h3>
+            <button class="btn add-to-cart" type="button">
+                Add to Cart
+            </button>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card"
+             data-name="Roses with Chocolate"
+             data-price="200">
+            <h2>Roses with Chocolate</h2>
+            <p>
+                Luxury Flower Mix with
+                Premium Chocolate Box
+            </p>
+            <h3>200 SAR</h3>
+            <button class="btn add-to-cart" type="button">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+
+    <p>
+        <a asp-controller="Cart" asp-action="Index" class="btn">
+            View Shopping Cart 🛒
+        </a>
+    </p>
+</main>
+
+<!-- Image Mapping -->
+<div style="text-align:center; margin:30px 0;">
+    <h3>Click the image to visit About Us</h3>
+    <img src="~/flower.jpg"
+         alt="Flower Store"
+         width="250"
+         usemap="#workmap"
+         style="border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1);">
+    <map name="workmap">
+        <area shape="rect"
+              coords="0,0,250,250"
+              alt="About Us"
+              href="@Url.Action("About", "Home")">
+    </map>
+</div>

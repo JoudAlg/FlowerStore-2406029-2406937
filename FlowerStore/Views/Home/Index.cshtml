@@ -1,0 +1,118 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- Start of Hero Section -->
+<section class="hero">
+    <h1>Welcome to Flower & Gift Store</h1>
+    <p>Make your loved ones' day brighter with our best flower bouquets</p>
+
+    <!-- Internal Link Requirement within content -->
+    <a href="#about-section" class="btn">Learn More About Us</a>
+</section>
+<!-- End of Hero Section -->
+
+<!-- Image Mapping Section -->
+<div class="hero-image-container">
+    <h3>Click anywhere on the image below to visit "About Us" page</h3>
+
+    <img src="~/flower.jpg"
+         alt="Flower Store"
+         usemap="#workmap"
+         width="400"
+         style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+
+    <map name="workmap">
+        <area shape="rect"
+              coords="0,0,400,400"
+              alt="About Us"
+              href="@Url.Action("About", "Home")">
+    </map>
+</div>
+
+<!-- Start of Featured Products Section -->
+<section class="featured-products" id="products-info">
+    <h2>Featured Products</h2>
+
+    <!-- List Requirement -->
+    <ul class="features-list">
+        <li>✨ 100% Fresh & Guaranteed Quality Flowers</li>
+        <li>🚚 Fast Same-Day Delivery</li>
+        <li>🎁 Premium Gift Packaging</li>
+    </ul>
+
+    <!-- Table Requirement -->
+    <table>
+        <thead>
+            <tr>
+                <th>Bouquet Name</th>
+                <th>Includes</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Red Rose Bouquet</td>
+                <td>12 Fresh Red Roses with Custom Arrangement</td>
+                <td>120 SAR</td>
+            </tr>
+            <tr>
+                <td>Roses with Chocolate</td>
+                <td>Luxury Flower Mix with Premium Chocolate Box</td>
+                <td>200 SAR</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Product Cards -->
+    <div class="product-grid">
+
+        <!-- Product 1: Red Rose Bouquet -->
+        <div class="product-card"
+             data-name="Red Rose Bouquet"
+             data-price="120">
+
+            <h3>Red Rose Bouquet</h3>
+            <p>120 SAR</p>
+
+            <button type="button" class="btn add-to-cart">
+                Add to Cart
+            </button>
+        </div>
+
+        <!-- Product 2: Roses with Chocolate -->
+        <div class="product-card"
+             data-name="Roses with Chocolate"
+             data-price="200">
+
+            <h3>Roses with Chocolate</h3>
+            <p>200 SAR</p>
+
+            <button type="button" class="btn add-to-cart">
+                Add to Cart
+            </button>
+        </div>
+
+    </div>
+</section>
+<!-- End of Featured Products Section -->
+
+<!-- Article Element and Internal Linking Target -->
+<article id="about-section"
+         style="text-align: center; padding: 40px; background-color: #fff; margin: 20px 0;">
+
+    <h2>Why Choose Our Store?</h2>
+
+    <p>
+        We provide the finest flower arrangements and custom gifts
+        to make all your special occasions unforgettable.
+    </p>
+</article>
+
+@section Scripts {
+    <!-- Embedded JavaScript -->
+    <script>
+        // Display a welcome message in the browser console
+        console.log("Welcome to Flower & Gift Store!");
+    </script>
+}

@@ -94,6 +94,12 @@
 
     @if (Model.Count > 0)
     {
+        <p>
+            <a asp-controller="Orders" asp-action="Checkout" class="btn" style="font-size: 18px;">
+                Proceed to Checkout 💳
+            </a>
+        </p>
+
         <form asp-action="Clear" method="post" id="clearCartForm" style="display: inline;">
             <button class="btn" type="submit">Clear Cart</button>
         </form>
@@ -109,7 +115,7 @@
 <!-- Image Mapping -->
 <div style="text-align:center; margin:30px 0;">
     <h3>Click the image to visit About Us</h3>
-    <img src="~/flower.jpg"
+    <img src="~/images/flower.jpg"
          alt="Flower Store"
          width="250"
          usemap="#workmap"

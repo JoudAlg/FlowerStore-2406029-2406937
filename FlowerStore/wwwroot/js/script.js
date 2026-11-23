@@ -47,12 +47,12 @@ document.addEventListener("DOMContentLoaded", function () {
         changePictureBtn.addEventListener("click", function () {
 
             if (isOriginalPicture) {
-                storeImage.src = "/flower2.png";
+                storeImage.src = "/images/flower2.png";
                 changePictureBtn.textContent = "Original Picture 🌸";
                 isOriginalPicture = false;
             }
             else {
-                storeImage.src = "/flower.jpg";
+                storeImage.src = "/images/flower.jpg";
                 changePictureBtn.textContent = "Change Picture 🌸";
                 isOriginalPicture = true;
             }

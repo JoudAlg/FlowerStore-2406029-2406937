@@ -1,0 +1,76 @@
+@model Order
+@{
+    ViewData["Title"] = "Order Confirmed";
+}
+
+@section Styles {
+    <style>
+        .confirm-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .confirm-container h1 {
+            color: #d63384;
+        }
+
+        .order-info {
+            text-align: left;
+            margin: 20px auto;
+            line-height: 1.8;
+        }
+
+        .order-table {
+            width: 100%;
+            margin-top: 15px;
+        }
+    </style>
+}
+
+<main class="confirm-container">
+    <h1>🎉 Thank You for Your Order!</h1>
+    <p>Your order number is <strong>#@Model.Id</strong></p>
+
+    <div class="order-info">
+        <p><strong>Receiver:</strong> @Model.CustomerName</p>
+        <p><strong>Phone:</strong> @Model.Phone</p>
+        <p><strong>Address:</strong> @Model.Address</p>
+        <p><strong>Delivery Date:</strong> @Model.DeliveryDate.ToString("dddd, d MMMM yyyy")</p>
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <p><strong>Gift Message:</strong> "@Model.Notes"</p>
+        }
+        <p><strong>Ordered On:</strong> @Model.OrderDate.ToString("d MMM yyyy, h:mm tt")</p>
+    </div>
+
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Flower</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.Price.ToString("0.##") SAR</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.LineTotal.ToString("0.##") SAR</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2 style="color: #d63384;">Total: @Model.Total.ToString("0.##") SAR</h2>
+
+    <a asp-controller="Products" asp-action="Index" class="btn">Continue Shopping 🌸</a>
+</main>

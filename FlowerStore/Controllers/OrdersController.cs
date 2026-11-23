@@ -134,7 +134,24 @@ namespace FlowerStore.Controllers
             return View(order);
         }
 
-        // Joud adds here:  public IActionResult MyOrders() { ... }
-        // (show the orders where order.UserEmail == CurrentUser)
+        // ---------------------------------------------------------------
+        // GET: /Orders/MyOrders  -> list of the logged-in user's orders (RETRIEVE)
+        // ---------------------------------------------------------------
+        public IActionResult MyOrders()
+        {
+            if (CurrentUser == null)
+            {
+                TempData["Message"] = "Please log in to see your orders.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var orders = _context.Orders
+                .Include(o => o.Items)
+                .Where(o => o.UserEmail == CurrentUser)   // only this user's orders
+                .OrderByDescending(o => o.OrderDate)      // newest first
+                .ToList();
+
+            return View(orders);
+        }
     }
 }

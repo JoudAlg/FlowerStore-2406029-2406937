@@ -1,0 +1,143 @@
+@model List<Order>
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+@section Styles {
+    <style>
+        .orders-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .orders-container h1 {
+            color: #d63384;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 20px 25px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #f5c2d7;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .order-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: #d63384;
+        }
+
+        .order-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-scheduled {
+            background-color: #e7f1ff;
+            color: #0d6efd;
+        }
+
+        .status-today {
+            background-color: #fff3cd;
+            color: #997404;
+        }
+
+        .status-delivered {
+            background-color: #d1e7dd;
+            color: #146c43;
+        }
+
+        .order-items {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .order-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d63384;
+        }
+    </style>
+}
+
+<main class="orders-container">
+    <h1>📦 My Orders</h1>
+
+    @if (Model.Count == 0)
+    {
+        <p>You have not placed any orders yet.</p>
+        <a asp-controller="Products" asp-action="Index" class="btn">Start Shopping 🌸</a>
+    }
+    else
+    {
+        <p>You have <strong>@Model.Count</strong> order(s).</p>
+
+        foreach (var order in Model)
+        {
+            // Status is worked out from the delivery date
+            var statusText = "📅 Scheduled";
+            var statusClass = "status-scheduled";
+
+            if (order.DeliveryDate.Date < DateTime.Today)
+            {
+                statusText = "✅ Delivered";
+                statusClass = "status-delivered";
+            }
+            else if (order.DeliveryDate.Date == DateTime.Today)
+            {
+                statusText = "🚚 Out for Delivery";
+                statusClass = "status-today";
+            }
+
+            <div class="order-card">
+                <div class="order-header">
+                    <span class="order-number">Order #@order.Id</span>
+                    <span class="order-status @statusClass">@statusText</span>
+                </div>
+
+                <p>
+                    <strong>Ordered on:</strong> @order.OrderDate.ToString("d MMM yyyy, h:mm tt")<br />
+                    <strong>Delivery date:</strong> @order.DeliveryDate.ToString("dddd, d MMMM yyyy")<br />
+                    <strong>Receiver:</strong> @order.CustomerName
+                </p>
+
+                <ul class="order-items">
+                    @foreach (var item in order.Items)
+                    {
+                        <li>@item.ProductName × @item.Quantity — @item.LineTotal.ToString("0.##") SAR</li>
+                    }
+                </ul>
+
+                <div class="order-footer">
+                    <span class="order-total">Total: @order.Total.ToString("0.##") SAR</span>
+                    <a asp-action="Confirmation" asp-route-id="@order.Id" class="btn">View Details</a>
+                </div>
+            </div>
+        }
+    }
+</main>

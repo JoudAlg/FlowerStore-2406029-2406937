@@ -12,7 +12,9 @@ namespace FlowerStore.Data
         // Student 1: products table
         public DbSet<Product> Products { get; set; }
 
-        // Student 2 adds:  public DbSet<User> Users { get; set; }
+
+        // Student 2: Users table
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

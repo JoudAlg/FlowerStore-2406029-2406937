@@ -1,6 +1,8 @@
+
 using FlowerStore.Data;
 using FlowerStore.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FlowerStore.Controllers
 {
@@ -14,8 +16,44 @@ namespace FlowerStore.Controllers
         }
 
         // ---------------------------------------------------------------
-        // RETRIEVE + SEARCH
-        // GET: /Products  or  /Products?search=rose
+        // AUTHORIZATION: Only Admin can manage products
+        // Products Index and Search remain public
+        // ---------------------------------------------------------------
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            var action = RouteData.Values["action"]?.ToString();
+
+            if (!string.Equals(
+                action,
+                nameof(Index),
+                StringComparison.OrdinalIgnoreCase))
+            {
+                // Visitors must log in first
+                if (!HttpContext.Session.GetInt32("UserId").HasValue)
+                {
+                    context.Result = RedirectToAction("Login", "Account");
+                    return;
+                }
+
+                // Only Admin can access management actions
+                var userRole = HttpContext.Session.GetString("UserRole");
+
+                if (!string.Equals(
+                    userRole?.Trim(),
+                    "Admin",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    context.Result = new StatusCodeResult(403);
+                    return;
+                }
+            }
+
+            base.OnActionExecuting(context);
+        }
+
+        // ---------------------------------------------------------------
+        // RETRIEVE + SEARCH (Public)
+        // GET: /Products or /Products?search=rose
         // ---------------------------------------------------------------
         public IActionResult Index(string? search)
         {
@@ -24,69 +62,73 @@ namespace FlowerStore.Controllers
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
+
                 products = products.Where(p =>
                     p.Name.Contains(search) ||
-                    (p.Description != null && p.Description.Contains(search)));
+                    (p.Description != null &&
+                     p.Description.Contains(search)));
             }
 
             ViewData["Search"] = search;
-            return View(products.OrderBy(p => p.Name).ToList());
+
+            return View(
+                products.OrderBy(p => p.Name).ToList());
         }
 
         // ---------------------------------------------------------------
-        // Admin page: table of all products with Edit / Delete buttons
-        // GET: /Products/Manage
+        // MANAGE (Admin only)
         // ---------------------------------------------------------------
         public IActionResult Manage()
         {
-            // Student 2: when login is ready, only logged-in users may open admin pages:
-            // if (HttpContext.Session.GetString("UserName") == null)
-            //     return RedirectToAction("Login", "Account");
-
-            return View(_context.Products.OrderBy(p => p.Id).ToList());
+            return View(
+                _context.Products.OrderBy(p => p.Id).ToList());
         }
 
         // ---------------------------------------------------------------
-        // INSERT
+        // INSERT (Admin only)
         // ---------------------------------------------------------------
 
-        // GET: /Products/Create  -> shows the empty form
+        // GET: /Products/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: /Products/Create  -> receives the form data
+        // POST: /Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Product product)
         {
-            // Extra server-side check: no two products with the same name
             if (_context.Products.Any(p => p.Name == product.Name))
             {
-                ModelState.AddModelError("Name", "A product with this name already exists.");
+                ModelState.AddModelError(
+                    "Name",
+                    "A product with this name already exists.");
             }
 
             if (!ModelState.IsValid)
             {
-                return View(product); // show the form again with the error messages
+                return View(product);
             }
 
             _context.Products.Add(product);
             _context.SaveChanges();
 
-            TempData["Message"] = $"\"{product.Name}\" was added successfully.";
+            TempData["Message"] =
+                $"\"{product.Name}\" was added successfully.";
+
             return RedirectToAction(nameof(Manage));
         }
 
         // ---------------------------------------------------------------
-        // UPDATE
+        // UPDATE (Admin only)
         // ---------------------------------------------------------------
 
-        // GET: /Products/Edit/5  -> shows the form filled with the product data
+        // GET: /Products/Edit/5
         public IActionResult Edit(int id)
         {
             var product = _context.Products.Find(id);
+
             if (product == null)
             {
                 return NotFound();
@@ -95,7 +137,7 @@ namespace FlowerStore.Controllers
             return View(product);
         }
 
-        // POST: /Products/Edit/5  -> saves the changes
+        // POST: /Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Product product)
@@ -105,9 +147,12 @@ namespace FlowerStore.Controllers
                 return NotFound();
             }
 
-            if (_context.Products.Any(p => p.Name == product.Name && p.Id != product.Id))
+            if (_context.Products.Any(p =>
+                p.Name == product.Name && p.Id != product.Id))
             {
-                ModelState.AddModelError("Name", "Another product already has this name.");
+                ModelState.AddModelError(
+                    "Name",
+                    "Another product already has this name.");
             }
 
             if (!ModelState.IsValid)
@@ -118,18 +163,21 @@ namespace FlowerStore.Controllers
             _context.Products.Update(product);
             _context.SaveChanges();
 
-            TempData["Message"] = $"\"{product.Name}\" was updated successfully.";
+            TempData["Message"] =
+                $"\"{product.Name}\" was updated successfully.";
+
             return RedirectToAction(nameof(Manage));
         }
 
         // ---------------------------------------------------------------
-        // DELETE
+        // DELETE (Admin only)
         // ---------------------------------------------------------------
 
-        // GET: /Products/Delete/5  -> asks "Are you sure?"
+        // GET: /Products/Delete/5
         public IActionResult Delete(int id)
         {
             var product = _context.Products.Find(id);
+
             if (product == null)
             {
                 return NotFound();
@@ -138,17 +186,20 @@ namespace FlowerStore.Controllers
             return View(product);
         }
 
-        // POST: /Products/Delete/5  -> deletes the product
+        // POST: /Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             var product = _context.Products.Find(id);
+
             if (product != null)
             {
                 _context.Products.Remove(product);
                 _context.SaveChanges();
-                TempData["Message"] = $"\"{product.Name}\" was deleted.";
+
+                TempData["Message"] =
+                    $"\"{product.Name}\" was deleted.";
             }
 
             return RedirectToAction(nameof(Manage));

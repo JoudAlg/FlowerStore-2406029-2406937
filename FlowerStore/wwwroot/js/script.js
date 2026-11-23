@@ -125,32 +125,32 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+
     // PART 5: Login Form Validation
     const loginForm = document.getElementById("loginForm");
 
     if (loginForm) {
-
         loginForm.addEventListener("submit", function (event) {
-            event.preventDefault();
 
-            const email = document.getElementById("email")
-                .value.trim();
-
-            const password = document.getElementById("password")
-                .value;
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
 
             if (email === "" || password === "") {
+                event.preventDefault();
                 alert("Please fill in all fields.");
             }
             else if (!isValidEmail(email)) {
+                event.preventDefault();
                 alert("Please enter a valid email address.");
             }
             else if (password.length < 6) {
+                event.preventDefault();
                 alert("Password must be at least 6 characters.");
             }
             else {
-                alert("Login form validated successfully! (Demo only)");
+                // Valid login: allow form submission to AccountController.
             }
+
         });
     }
 
@@ -160,7 +160,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (registerForm) {
 
         registerForm.addEventListener("submit", function (event) {
-            event.preventDefault();
+
+            if (!registerForm.checkValidity()) {
+                event.preventDefault();
+                return;
+            }
+
 
             const name = document.getElementById("fullname")
                 .value.trim();
@@ -175,30 +180,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 "confirm-password"
             ).value;
 
+
             if (name === "" || email === "" ||
-                password === "" || confirmPassword === "") {
+
+    password === "" || confirmPassword === "") {
+
+                event.preventDefault();
 
                 alert("Please fill in all fields.");
             }
             else if (name.length < 2) {
+                event.preventDefault();
                 alert("Please enter your full name.");
             }
+
             else if (!isValidEmail(email)) {
+                event.preventDefault();
                 alert("Please enter a valid email address.");
             }
-            else if (password.length < 6) {
-                alert("Password must be at least 6 characters.");
+            else if (password.length < 8) {
+                event.preventDefault();
+                alert("Password must be at least 8 characters.");
             }
-            else if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-            }
-            else {
-                alert(
-                    "Registration form validated successfully! 🌸 (Demo only)"
-                );
 
-                registerForm.reset();
+
+
+else if (password !== confirmPassword) {
+    event.preventDefault();
+    alert("Passwords do not match!");
+}
+
+
+            else {
+                // Valid registration: allow the form to submit to the server.
             }
+
         });
     }
 

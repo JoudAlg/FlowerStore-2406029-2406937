@@ -20,52 +20,103 @@
             text-align: left;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #333;
+            }
 
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+            }
     </style>
 }
 
 <!-- Login Form Container (Forms Requirement) -->
-<!-- Student 2: add method="post" and the server-side login logic -->
 <div class="form-container">
-    <!-- Inline CSS -->
-    <h2 style="color: #d63384; margin-bottom: 20px;">Welcome Back</h2>
 
-    <form id="loginForm">
+    <!-- Inline CSS -->
+    <h2 style="color: #d63384; margin-bottom: 20px;">
+        Welcome Back
+    </h2>
+
+    <form id="loginForm"
+          asp-controller="Account"
+          asp-action="Login"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All"
+             style="color: red; margin-bottom: 15px;">
+        </div>
+
         <div class="form-group">
             <label for="email">Email Address:</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required />
+            <input type="email"
+                   id="email"
+                   name="Email"
+                   value="@ViewBag.RememberedEmail"
+                   placeholder="Enter your email"
+                   required />
         </div>
 
         <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required />
+            <input type="password"
+                   id="password"
+                   name="Password"
+                   placeholder="Enter your password"
+                   required />
         </div>
 
-        <button type="submit" class="btn" style="width: 100%;">Login</button>
+        <!-- Remember Me Checkbox -->
+        <div style="text-align: left; margin-bottom: 15px;">
+            <label>
+                <input type="checkbox"
+                       name="RememberMe"
+                       value="true"
+                       style="width: auto;" />
+                Remember Me
+            </label>
+        </div>
+
+        <button type="submit"
+                class="btn"
+                style="width: 100%;">
+            Login
+        </button>
+
     </form>
 
     <p style="margin-top: 15px; font-size: 14px;">
-        Don't have an account? <a asp-controller="Account" asp-action="Register" style="color: #d63384;">Sign-up here</a>
+        Don't have an account?
+        <a asp-controller="Account"
+           asp-action="Register"
+           style="color: #d63384;">
+            Sign-up here
+        </a>
     </p>
+
 </div>
 
 <!-- Image Mapping Section -->
 <div style="text-align: center; margin: 30px 0;">
-    <img src="~/flower.jpg" alt="Flower Store" usemap="#workmap" width="250" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+    <img src="~/flower.jpg"
+         alt="Flower Store"
+         usemap="#workmap"
+         width="250"
+         style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+
     <map name="workmap">
-        <area shape="rect" coords="0,0,250,250" alt="About Us" href="@Url.Action("About", "Home")">
+        <area shape="rect"
+              coords="0,0,250,250"
+              alt="About Us"
+              href="@Url.Action("About", "Home")">
     </map>
 </div>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,20 +14,37 @@
 </head>
 <body>
 
-    <!-- Start of Header and Navigation Bar (Master page and menu) -->
+    <!-- Start of Header and Navigation Bar -->
     <header class="main-header">
         <div class="logo">🌸 Flower Store</div>
+
         <nav class="nav-links">
             <a asp-controller="Home" asp-action="Index">Home</a>
             <a asp-controller="Products" asp-action="Index">Products</a>
             <a asp-controller="Cart" asp-action="Index">🛒 Cart</a>
-            <a asp-controller="Account" asp-action="Login">Login</a>
-            <a asp-controller="Account" asp-action="Register">Sign-up</a>
+
+            @if (Context.Session.GetInt32("UserId").HasValue)
+            {
+                <span>Welcome, @Context.Session.GetString("UserName")</span>
+
+                <form asp-controller="Account"
+                      asp-action="Logout"
+                      method="post"
+                      style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Login</a>
+                <a asp-controller="Account" asp-action="Register">Sign-up</a>
+            }
+
             <a asp-controller="Home" asp-action="About">About Us</a>
         </nav>
     </header>
     <!-- End of Header -->
-
     @RenderBody()
 
     <!-- Start of Footer -->
@@ -34,11 +52,11 @@
         <p>All Rights Reserved &copy; 2026</p>
     </footer>
     <!-- End of Footer -->
-
     <!-- External JavaScript -->
     <script src="~/js/script.js" asp-append-version="true"></script>
 
     <!-- Each page can add its own embedded JavaScript here -->
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

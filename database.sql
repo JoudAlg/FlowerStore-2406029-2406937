@@ -58,3 +58,46 @@ VALUES (N'20261123191431_AddUserRole', N'10.0.15');
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+CREATE TABLE [Orders] (
+    [Id] int NOT NULL IDENTITY,
+    [UserEmail] nvarchar(150) NOT NULL,
+    [CustomerName] nvarchar(100) NOT NULL,
+    [Phone] nvarchar(max) NOT NULL,
+    [Address] nvarchar(300) NOT NULL,
+    [DeliveryDate] datetime2 NOT NULL,
+    [Notes] nvarchar(200) NULL,
+    [OrderDate] datetime2 NOT NULL,
+    [Total] decimal(10,2) NOT NULL,
+    CONSTRAINT [PK_Orders] PRIMARY KEY ([Id])
+);
+
+CREATE TABLE [OrderItems] (
+    [Id] int NOT NULL IDENTITY,
+    [OrderId] int NOT NULL,
+    [ProductId] int NOT NULL,
+    [ProductName] nvarchar(max) NOT NULL,
+    [Price] decimal(10,2) NOT NULL,
+    [Quantity] int NOT NULL,
+    CONSTRAINT [PK_OrderItems] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OrderItems_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [Orders] ([Id]) ON DELETE CASCADE
+);
+
+UPDATE [Products] SET [ImageUrl] = N'/images/flower.jpg'
+WHERE [Id] = 1;
+SELECT @@ROWCOUNT;
+
+
+UPDATE [Products] SET [ImageUrl] = N'/images/flower2.png'
+WHERE [Id] = 2;
+SELECT @@ROWCOUNT;
+
+
+CREATE INDEX [IX_OrderItems_OrderId] ON [OrderItems] ([OrderId]);
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20261123224723_AddOrders', N'10.0.15');
+
+COMMIT;
+GO
+

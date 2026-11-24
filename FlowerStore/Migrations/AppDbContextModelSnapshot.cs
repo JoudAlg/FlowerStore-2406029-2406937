@@ -106,6 +106,13 @@ namespace FlowerStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Bouquets");
+
                     b.Property<string>("Description")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
@@ -130,30 +137,36 @@ namespace FlowerStore.Migrations
                         new
                         {
                             Id = 1,
+                            Category = "Roses",
                             Description = "12 Fresh Red Roses with Custom Arrangement",
-                            ImageUrl = "/images/flower.jpg",
+                            ImageUrl = "/images/red-roses.jpg",
                             Name = "Red Rose Bouquet",
                             Price = 120m
                         },
                         new
                         {
                             Id = 2,
+                            Category = "Gift Boxes",
                             Description = "Luxury Flower Mix with Premium Chocolate Box",
-                            ImageUrl = "/images/flower2.png",
+                            ImageUrl = "/images/roses-chocolate.jpg",
                             Name = "Roses with Chocolate",
                             Price = 200m
                         },
                         new
                         {
                             Id = 3,
+                            Category = "Bouquets",
                             Description = "Elegant White Lilies Wrapped in Premium Paper",
+                            ImageUrl = "/images/white-lily.jpg",
                             Name = "White Lily Bouquet",
                             Price = 150m
                         },
                         new
                         {
                             Id = 4,
+                            Category = "Gift Boxes",
                             Description = "Colorful Tulips in a Luxury Gift Box",
+                            ImageUrl = "/images/tulip-box.jpg",
                             Name = "Tulip Gift Box",
                             Price = 180m
                         });

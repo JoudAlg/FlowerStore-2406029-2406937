@@ -25,5 +25,12 @@ namespace FlowerStore.Models
         [StringLength(200)]
         [Display(Name = "Image Path")]
         public string? ImageUrl { get; set; }
+
+        [Required(ErrorMessage = "Please choose a category.")]
+        [StringLength(50)]
+        public string Category { get; set; } = "Bouquets";
+
+        // The categories the store uses (shown as filter buttons and in the admin form)
+        public static readonly string[] Categories = { "Roses", "Bouquets", "Gift Boxes" };
     }
 }

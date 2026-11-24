@@ -10,6 +10,14 @@
 </div>
 
 <div class="form-group">
+    <label asp-for="Category"></label>
+    <select asp-for="Category" asp-items="@(new SelectList(Product.Categories))"
+            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </select>
+    <span asp-validation-for="Category" class="field-error"></span>
+</div>
+
+<div class="form-group">
     <label asp-for="Description"></label>
     <textarea asp-for="Description" rows="3" placeholder="What does the bouquet include?"></textarea>
     <span asp-validation-for="Description" class="field-error"></span>

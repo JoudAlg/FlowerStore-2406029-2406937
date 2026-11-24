@@ -52,12 +52,23 @@ namespace FlowerStore.Controllers
         }
 
         // ---------------------------------------------------------------
-        // RETRIEVE + SEARCH (Public)
-        // GET: /Products or /Products?search=rose
+        // RETRIEVE + SEARCH + FILTER BY CATEGORY (Public)
+        // GET: /Products  or  /Products?search=rose  or  /Products?category=Roses
         // ---------------------------------------------------------------
-        public IActionResult Index(string? search)
+        public IActionResult Index(string? search, string? category)
         {
             var products = _context.Products.AsQueryable();
+
+            // Filter by category (only if it is one of our categories)
+            if (!string.IsNullOrWhiteSpace(category) &&
+                Product.Categories.Contains(category))
+            {
+                products = products.Where(p => p.Category == category);
+            }
+            else
+            {
+                category = null; // "All"
+            }
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -70,6 +81,7 @@ namespace FlowerStore.Controllers
             }
 
             ViewData["Search"] = search;
+            ViewData["Category"] = category;
 
             return View(
                 products.OrderBy(p => p.Name).ToList());
@@ -104,6 +116,13 @@ namespace FlowerStore.Controllers
                 ModelState.AddModelError(
                     "Name",
                     "A product with this name already exists.");
+            }
+
+            if (!Product.Categories.Contains(product.Category))
+            {
+                ModelState.AddModelError(
+                    "Category",
+                    "Please choose a valid category.");
             }
 
             if (!ModelState.IsValid)
@@ -153,6 +172,13 @@ namespace FlowerStore.Controllers
                 ModelState.AddModelError(
                     "Name",
                     "Another product already has this name.");
+            }
+
+            if (!Product.Categories.Contains(product.Category))
+            {
+                ModelState.AddModelError(
+                    "Category",
+                    "Please choose a valid category.");
             }
 
             if (!ModelState.IsValid)

@@ -1,5 +1,7 @@
 using FlowerStore.Data;
 using Microsoft.EntityFrameworkCore;
+using FlowerStore.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,25 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 var app = builder.Build();
+// Create the database and a default Admin account the first time the site runs
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate(); // applies all migrations automatically
+
+    if (!db.Users.Any(u => u.Role == "Admin"))
+    {
+        var admin = new User
+        {
+            FullName = "Store Admin",
+            Email = "admin@flowerstore.com",
+            Role = "Admin"
+        };
+        admin.PasswordHash = new PasswordHasher<User>().HashPassword(admin, "Admin@1234");
+        db.Users.Add(admin);
+        db.SaveChanges();
+    }
+}
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

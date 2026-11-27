@@ -15,34 +15,45 @@
 <body>
     
     <!-- Start of Header and Navigation Bar -->
+    @{
+        var isLoggedIn = Context.Session.GetInt32("UserId").HasValue;
+        var isAdmin = Context.Session.GetString("UserRole") == "Admin";
+        var fullName = Context.Session.GetString("UserName") ?? "";
+        var firstName = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? fullName;
+    }
     <header class="main-header">
-        <div class="logo">🌸 Flower Store</div>
+        <a asp-controller="Home" asp-action="Index" class="logo">🌸 Flower Store</a>
 
         <nav class="nav-links">
             <a asp-controller="Home" asp-action="Index">Home</a>
             <a asp-controller="Products" asp-action="Index">Products</a>
             <a asp-controller="Cart" asp-action="Index">🛒 Cart</a>
+            <a asp-controller="Home" asp-action="About">About Us</a>
 
-            @if (Context.Session.GetInt32("UserId").HasValue)
+            @if (isLoggedIn)
             {
                 <a asp-controller="Orders" asp-action="MyOrders">📦 My Orders</a>
-                <span>Welcome, @Context.Session.GetString("UserName")</span>
-                
+
+                if (isAdmin)
+                {
+                    <a asp-controller="Products" asp-action="Manage">⚙️ Manage</a>
+                }
+
+                <span class="nav-user" title="@fullName">Hi, @firstName 👋</span>
+
                 <form asp-controller="Account"
                       asp-action="Logout"
                       method="post"
-                      style="display: inline;">
+                      class="logout-form">
                     @Html.AntiForgeryToken()
-                    <button type="submit">Logout</button>
+                    <button type="submit" class="logout-btn">Logout</button>
                 </form>
             }
             else
             {
                 <a asp-controller="Account" asp-action="Login">Login</a>
-                <a asp-controller="Account" asp-action="Register">Sign-up</a>
+                <a asp-controller="Account" asp-action="Register" class="nav-signup">Sign-up</a>
             }
-
-            <a asp-controller="Home" asp-action="About">About Us</a>
         </nav>
     </header>
     <!-- End of Header -->

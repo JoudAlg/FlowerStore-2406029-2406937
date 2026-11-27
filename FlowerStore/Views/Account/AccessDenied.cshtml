@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+@section Styles {
+    <style>
+        .denied-container {
+            max-width: 520px;
+            margin: 60px auto;
+            padding: 40px 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .denied-icon {
+            font-size: 70px;
+        }
+
+        .denied-container h1 {
+            color: #d63384;
+            margin: 10px 0;
+        }
+
+        .denied-container p {
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+}
+
+<!-- Friendly page shown when a Customer tries to open an Admin-only page -->
+<main class="denied-container">
+    <div class="denied-icon">🔒</div>
+    <h1>Access Denied</h1>
+    <p>
+        Sorry, this page is for <strong>store administrators</strong> only.<br />
+        You are logged in as <strong>@Context.Session.GetString("UserName")</strong>.
+    </p>
+
+    <a asp-controller="Home" asp-action="Index" class="btn">Back to Home</a>
+    <a asp-controller="Products" asp-action="Index" class="btn">Browse Flowers 🌸</a>
+</main>

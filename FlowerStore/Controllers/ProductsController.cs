@@ -31,7 +31,9 @@ namespace FlowerStore.Controllers
                 // Visitors must log in first
                 if (!HttpContext.Session.GetInt32("UserId").HasValue)
                 {
-                    context.Result = RedirectToAction("Login", "Account");
+                    TempData["Message"] = "Please log in with an admin account to manage products.";
+                    context.Result = RedirectToAction("Login", "Account",
+                        new { returnUrl = Request.Path + Request.QueryString });
                     return;
                 }
 
@@ -43,7 +45,8 @@ namespace FlowerStore.Controllers
                     "Admin",
                     StringComparison.OrdinalIgnoreCase))
                 {
-                    context.Result = new StatusCodeResult(403);
+                    // Friendly page instead of the browser's "HTTP ERROR 403"
+                    context.Result = RedirectToAction("AccessDenied", "Account");
                     return;
                 }
             }

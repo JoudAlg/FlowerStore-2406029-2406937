@@ -180,9 +180,12 @@
         <a asp-controller="Cart" asp-action="Index" class="btn">
             View Shopping Cart 🛒
         </a>
-        <a asp-action="Manage" class="btn">
-            Manage Products ⚙️
-        </a>
+        @if (Context.Session.GetString("UserRole") == "Admin")
+        {
+            <a asp-action="Manage" class="btn">
+                Manage Products ⚙️
+            </a>
+        }
     </p>
 </main>
 

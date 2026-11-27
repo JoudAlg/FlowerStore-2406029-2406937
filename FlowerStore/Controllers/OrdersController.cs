@@ -43,7 +43,7 @@ namespace FlowerStore.Controllers
             if (CurrentUser == null)
             {
                 TempData["Message"] = "Please log in to complete your order.";
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Account", new { returnUrl = Request.Path.ToString() });
             }
 
             var cart = GetCart();
@@ -71,7 +71,7 @@ namespace FlowerStore.Controllers
         {
             if (CurrentUser == null)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Account", new { returnUrl = Request.Path.ToString() });
             }
 
             var cart = GetCart();
@@ -142,7 +142,7 @@ namespace FlowerStore.Controllers
             if (CurrentUser == null)
             {
                 TempData["Message"] = "Please log in to see your orders.";
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Account", new { returnUrl = Request.Path.ToString() });
             }
 
             var orders = _context.Orders

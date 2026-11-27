@@ -27,6 +27,16 @@
                 color: #333;
             }
 
+            .form-message {
+                background-color: #fff0f6;
+                border: 1px solid #f5c2d7;
+                color: #d63384;
+                border-radius: 8px;
+                padding: 10px;
+                margin-bottom: 20px;
+                font-weight: bold;
+            }
+
             .form-group input {
                 width: 100%;
                 padding: 10px;
@@ -45,12 +55,21 @@
         Welcome Back
     </h2>
 
+    <!-- Messages from other pages (account created, logged out, please log in...) -->
+    @if (TempData["Message"] != null)
+    {
+        <div class="form-message">@TempData["Message"]</div>
+    }
+
     <form id="loginForm"
           asp-controller="Account"
           asp-action="Login"
           method="post">
 
         @Html.AntiForgeryToken()
+
+        <!-- The page to return to after logging in -->
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
 
         <div asp-validation-summary="All"
              style="color: red; margin-bottom: 15px;">

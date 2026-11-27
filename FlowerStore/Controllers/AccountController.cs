@@ -18,11 +18,13 @@ namespace FlowerStore.Controllers
         }
 
         // GET: /Account/Login
-        public IActionResult Login()
+        // returnUrl = the page the user wanted before being asked to log in
+        public IActionResult Login(string? returnUrl)
         {
             // Read remembered email from Cookie
             ViewBag.RememberedEmail =
                 Request.Cookies["RememberedEmail"] ?? "";
+            ViewBag.ReturnUrl = returnUrl;
 
             return View();
         }
@@ -91,6 +93,7 @@ namespace FlowerStore.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
+            TempData["Message"] = "Account created successfully! Please log in. 🌸";
             return RedirectToAction("Login");
         }
 
@@ -100,9 +103,14 @@ namespace FlowerStore.Controllers
         public async Task<IActionResult> Login(
             string Email,
             string Password,
-            bool RememberMe)
+            bool RememberMe,
+            string? returnUrl)
         {
             Email = Email?.Trim().ToLowerInvariant() ?? "";
+
+            // Keep the typed email and the return page if the login fails
+            ViewBag.RememberedEmail = Email;
+            ViewBag.ReturnUrl = returnUrl;
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == Email);
@@ -152,6 +160,12 @@ namespace FlowerStore.Controllers
                 Response.Cookies.Delete("RememberedEmail");
             }
 
+            // Go back to the page the user wanted (e.g. Checkout), if it is inside our site
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -162,7 +176,15 @@ namespace FlowerStore.Controllers
         {
             HttpContext.Session.Clear();
 
+            TempData["Message"] = "You have been logged out. See you soon! 👋";
             return RedirectToAction("Login", "Account");
+        }
+
+        // GET: /Account/AccessDenied
+        // Shown when a logged-in Customer tries to open an Admin page
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

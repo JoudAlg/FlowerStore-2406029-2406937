@@ -101,3 +101,59 @@ VALUES (N'20261123224723_AddOrders', N'10.0.15');
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+ALTER TABLE [Products] ADD [Category] nvarchar(50) NOT NULL DEFAULT N'Bouquets';
+
+UPDATE [Products] SET [Category] = N'Roses'
+WHERE [Id] = 1;
+SELECT @@ROWCOUNT;
+
+
+UPDATE [Products] SET [Category] = N'Gift Boxes'
+WHERE [Id] = 2;
+SELECT @@ROWCOUNT;
+
+
+UPDATE [Products] SET [Category] = N'Bouquets'
+WHERE [Id] = 3;
+SELECT @@ROWCOUNT;
+
+
+UPDATE [Products] SET [Category] = N'Gift Boxes'
+WHERE [Id] = 4;
+SELECT @@ROWCOUNT;
+
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20261124011106_AddCategories', N'10.0.15');
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+UPDATE [Products] SET [ImageUrl] = N'/images/red-roses.jpg'
+WHERE [Id] = 1;
+SELECT @@ROWCOUNT;
+
+
+UPDATE [Products] SET [ImageUrl] = N'/images/roses-chocolate.jpg'
+WHERE [Id] = 2;
+SELECT @@ROWCOUNT;
+
+
+UPDATE [Products] SET [ImageUrl] = N'/images/white-lily.jpg'
+WHERE [Id] = 3;
+SELECT @@ROWCOUNT;
+
+
+UPDATE [Products] SET [ImageUrl] = N'/images/tulip-box.jpg'
+WHERE [Id] = 4;
+SELECT @@ROWCOUNT;
+
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20261124013937_UpdateProductImages', N'10.0.15');
+
+COMMIT;
+GO
+
